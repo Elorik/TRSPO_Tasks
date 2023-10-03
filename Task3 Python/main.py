@@ -43,7 +43,7 @@ def compute_average_steps(start, end, num_threads):
 
 if __name__ == "__main__":
     N = 100  # Замініть N на бажане число
-    num_threads = 5  # Замініть на бажану кількість потоків
+    num_threads = 4  # Замініть на бажану кількість потоків
 
     average_steps = compute_average_steps(1, N, num_threads)
 
