@@ -1,5 +1,5 @@
-import multiprocessing
-import threading
+import concurrent.futures
+import itertools
 
 
 def collatz_steps(n):
@@ -14,36 +14,20 @@ def collatz_steps(n):
 
 
 def compute_average_steps(start, end, num_threads):
-    numbers = list(range(start, end + 1))
-    results = []
+    numbers = itertools.islice(itertools.count(start), 0, end - start + 1)
 
-    def worker():
-        while True:
-            try:
-                number = numbers.pop()
-            except IndexError:
-                break
-            steps = collatz_steps(number)
-            results.append(steps)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
+        steps = list(executor.map(collatz_steps, numbers))
 
-    threads = []
-    for _ in range(num_threads):
-        thread = threading.Thread(target=worker)
-        thread.start()
-        threads.append(thread)
-
-    for thread in threads:
-        thread.join()
-
-    total_steps = sum(results)
+    total_steps = sum(steps)
     average_steps = total_steps / (end - start + 1)
 
     return average_steps
 
 
 if __name__ == "__main__":
-    N = 100  # Замініть N на бажане число
-    num_threads = 4  # Замініть на бажану кількість потоків
+    N = 200  # Замініть N на бажане число
+    num_threads = 10  # Замініть на бажану кількість потоків
 
     average_steps = compute_average_steps(1, N, num_threads)
 
