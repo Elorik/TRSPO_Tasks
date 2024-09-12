@@ -1,0 +1,24 @@
+version: '3'
+services:
+  client:
+    build: .
+    volumes:
+      - ./client:/client
+    networks:
+      - my_network
+    depends_on:
+      - server
+
+  server:
+    image: python:3.8
+    command: sh -c 'cd server && python server.py'
+    volumes:
+      - ./server:/server
+    networks:
+      - my_network
+    ports:
+      - "8080:8080"
+
+networks:
+  my_network:
+
